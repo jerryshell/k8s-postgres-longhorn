@@ -22,9 +22,9 @@ cd k8s-postgres-longhorn
 ## ConfigMap
 
 ```bash
-POSTGRES_DB=postgres
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=your_password
+export POSTGRES_DB=postgres
+export POSTGRES_USER=postgres
+export POSTGRES_PASSWORD=your_password
 cat k8s/configmap/configmap.yaml | envsubst | kubectl apply -f -
 ```
 
