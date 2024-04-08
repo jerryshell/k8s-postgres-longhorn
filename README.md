@@ -2,103 +2,35 @@
 
 [K8s](https://kubernetes.io/) + [PostgreSQL](https://www.postgresql.org/) + [Longhorn](https://longhorn.io/)
 
-## Install open-iscsi
+## Install Longhorn
 
 ```bash
-sudo apt install open-iscsi
+apt install open-iscsi -y
 ```
-
-## Install Longhorn
 
 ```bash
 kubectl apply -f https://raw.githubusercontent.com/longhorn/longhorn/v1.6.1/deploy/longhorn.yaml
 ```
 
-## PostgreSQL ConfigMap
+## ConfigMap
 
-```yaml
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: postgres-secret
-  labels:
-    app: postgres
-data:
-  POSTGRES_DB: postgres
-  POSTGRES_USER: postgres
-  POSTGRES_PASSWORD: YOUR_PASSWORD
+```bash
+POSTGRES_DB=postgres
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=your_password
+cat k8s/configmap/configmap.yaml | envsubst | kubectl apply -f -
 ```
 
-## PostgreSQL PVC
+## PVC + Deployment + Service
 
-```yaml
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: postgres-pvc
-spec:
-  accessModes:
-    - ReadWriteMany
-  storageClassName: longhorn
-  resources:
-    requests:
-      storage: 1Gi
+```bash
+kubectl apply -f k8s/
 ```
 
-## PostgreSQL Deployment
+## Delete
 
-```yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: postgres
-  labels:
-    app: postgres
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: postgres
-  template:
-    metadata:
-      labels:
-        app: postgres
-    spec:
-      containers:
-        - name: postgres
-          image: postgres:16
-          envFrom:
-            - configMapRef:
-                name: postgres-secret
-          env:
-            - name: PGDATA
-              value: /var/lib/postgresql/data/pgdata
-          ports:
-            - name: db
-              containerPort: 5432
-          volumeMounts:
-            - mountPath: /var/lib/postgresql/data
-              name: postgres-pvc
-      volumes:
-        - name: postgres-pvc
-          persistentVolumeClaim:
-            claimName: postgres-pvc
-```
-
-## PostgreSQL Service
-
-```yaml
-apiVersion: v1
-kind: Service
-metadata:
-  name: postgres
-spec:
-  ports:
-    - name: db
-      port: 5432
-      targetPort: db
-  selector:
-    app: postgres
+```bash
+kubectl delete --ignore-not-found=true -f k8s/ -f k8s/configmap/
 ```
 
 ## Connect to PostgreSQL via kubectl
