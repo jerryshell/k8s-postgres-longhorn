@@ -12,6 +12,13 @@ apt install open-iscsi -y
 kubectl apply -f https://raw.githubusercontent.com/longhorn/longhorn/v1.6.1/deploy/longhorn.yaml
 ```
 
+## Git clone
+
+```bash
+git clone https://github.com/jerryshell/k8s-postgres-longhorn.git
+cd k8s-postgres-longhorn
+```
+
 ## ConfigMap
 
 ```bash
