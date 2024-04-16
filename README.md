@@ -4,9 +4,25 @@
 
 ## Install Longhorn
 
+Environment Check Script
+
 ```bash
-apt install open-iscsi -y
+curl -sSfL https://raw.githubusercontent.com/longhorn/longhorn/v1.6.1/scripts/environment_check.sh | bash
 ```
+
+Installing open-iscsi
+
+```bash
+kubectl apply -f https://raw.githubusercontent.com/longhorn/longhorn/v1.6.1/deploy/prerequisite/longhorn-iscsi-installation.yaml
+```
+
+Installing NFSv4 client
+
+```bash
+kubectl apply -f https://raw.githubusercontent.com/longhorn/longhorn/v1.6.1/deploy/prerequisite/longhorn-nfs-installation.yaml
+```
+
+Installing Longhorn
 
 ```bash
 kubectl apply -f https://raw.githubusercontent.com/longhorn/longhorn/v1.6.1/deploy/longhorn.yaml
